@@ -7,17 +7,17 @@ class ClinicAppointment:
 
     # Show doctors
     def show_doctors(self):
-        print("\nAvailable Doctors:")
+        print("Available Doctors:")
         for i, doc in enumerate(self.doctors, 1):
             print(i, doc)
 
     # Show slots
     def show_slots(self):
-        print("\nAvailable Time Slots:")
+        print("Available Time Slots:")
         for i, slot in enumerate(self.slots, 1):
             print(i, slot)
 
-    # Check slot availability (max 3 per doctor per slot)
+    # Check slot availability 
     def check_availability(self, doctor, slot):
         count = 0
         for appt in self.appointments:
@@ -49,9 +49,9 @@ class ClinicAppointment:
                 "slot": slot
             }
             self.appointments.append(appointment)
-            print("\n✅ Appointment Booked Successfully!")
+            print(" Appointment Booked Successfully!")
         else:
-            print("\n❌ Slot Full! Try another time.")
+            print("Slot Full! Try another time.")
 
     # View appointment
     def view_appointment(self):
@@ -60,7 +60,7 @@ class ClinicAppointment:
 
         for appt in self.appointments:
             if appt["mobile"] == mobile:
-                print("\n📋 Appointment Details:")
+                print(" Appointment Details:")
                 for key, value in appt.items():
                     print(key.capitalize(), ":", value)
                 found = True
@@ -74,14 +74,14 @@ class ClinicAppointment:
         for appt in self.appointments:
             if appt["mobile"] == mobile:
                 self.appointments.remove(appt)
-                print("❌ Appointment Cancelled!")
+                print(" Appointment Cancelled!")
                 return
         print("No appointment found!")
 
     # Menu
     def run(self):
         while True:
-            print("\n===== Clinic Appointment System =====")
+            print(" Clinic Appointment System")
             print("1. Book Appointment")
             print("2. View Appointment")
             print("3. Cancel Appointment")
@@ -109,67 +109,133 @@ if __name__ == "__main__":
 
     
 # SCHOOL MANAGEMENT SYSTEM-------------
+
 class SchoolManagement:
-
     def __init__(self):
-        self.students = {}
-        self.student_id = 1
+        self.students = []
+        self.next_id = 1
 
+    #  Add new student
     def new_admission(self):
-        name = input("Enter name: ")
+        name = input("Enter student name: ")
         age = int(input("Enter age: "))
-        student_class = int(input("Enter class (1-12): "))
-        mobile = input("Enter mobile: ")
+        student_class = input("Enter class (1-12): ")
+        mobile = input("Enter guardian mobile number: ")
 
         if age < 5 or age > 18:
-            print("Invalid age")
+            print(" Invalid age! Must be between 5 and 18.")
             return
 
-        if len(mobile) != 10:
-            print("Invalid mobile")
+        if not (mobile.isdigit() and len(mobile) == 10):
+            print(" Invalid mobile number! Must be 10 digits.")
             return
 
-        sid = self.student_id
-
-        self.students[sid] = {
+        student = {
+            "id": self.next_id,
             "name": name,
             "age": age,
             "class": student_class,
             "mobile": mobile
         }
 
-        print("Student ID:", sid)
-        self.student_id += 1
+        self.students.append(student)
+        print(f" Admission successful! Student ID: {self.next_id}")
 
+        self.next_id += 1
 
+    #  View student details
     def view_student(self):
         sid = int(input("Enter student ID: "))
-        if sid in self.students:
-            print(self.students[sid])
-        else:
-            print("Student not found")
+        found = False
 
-            
-obj = SchoolManagement()
-while True:
+        for student in self.students:
+            if student["id"] == sid:
+                print("\n Student Details:")
+                for key, value in student.items():
+                    print(key.capitalize(), ":", value)
+                found = True
+                break
 
-    print("\n1. New Admission")
-    print("2. View Student")
-    print("3. Exit")
+        if not found:
+            print(" Student not found!")
 
-    choice = int(input("Enter choice: "))
+    #  Update student info
+    def update_student(self):
+        sid = int(input("Enter student ID: "))
+        found = False
 
-    if choice == 1:
-        obj.new_admission()
+        for student in self.students:
+            if student["id"] == sid:
+                print("1. Update Class")
+                print("2. Update Mobile Number")
+                choice = input("Enter choice: ")
 
-    elif choice == 2:
-        obj.view_student()
+                if choice == "1":
+                    new_class = input("Enter new class: ")
+                    student["class"] = new_class
+                    print(" Class updated successfully!")
 
-    elif choice == 3:
-        break
+                elif choice == "2":
+                    new_mobile = input("Enter new mobile: ")
+                    if new_mobile.isdigit() and len(new_mobile) == 10:
+                        student["mobile"] = new_mobile
+                        print(" Mobile updated successfully!")
+                    else:
+                        print(" Invalid mobile number!")
 
-    else:
-        print("Invalid choice")
+                else:
+                    print(" Invalid choice!")
+
+                found = True
+                break
+
+        if not found:
+            print(" Student not found!")
+
+    #  Remove student
+    def remove_student(self):
+        sid = int(input("Enter student ID: "))
+        found = False
+
+        for student in self.students:
+            if student["id"] == sid:
+                self.students.remove(student)
+                print(" Student record removed successfully!")
+                found = True
+                break
+
+        if not found:
+            print(" Student not found!")
+
+    # Menu
+    def run(self):
+        while True:
+            print("\n School Management System")
+            print("1. New Admission")
+            print("2. View Student")
+            print("3. Update Student")
+            print("4. Remove Student")
+            print("5. Exit")
+
+            choice = input("Enter choice: ")
+
+            if choice == "1":
+                self.new_admission()
+            elif choice == "2":
+                self.view_student()
+            elif choice == "3":
+                self.update_student()
+            elif choice == "4":
+                self.remove_student()
+            elif choice == "5":
+                print(" Exiting system...")
+                break
+            else:
+                print(" Invalid choice!")
+
+system = SchoolManagement()
+system.run()
+
 
 
 # TRANSPORT RESERVATION SYSTEM----------------
@@ -184,7 +250,7 @@ class BusReservation:
             4: {"route": "Bangalore to Chennai", "price": 700, "seats": 40, "booked": []}
         }
         
-        self.tickets = {}  # ticket_id → ticket details
+        self.tickets = {}  
 
     # Show available routes
     def show_routes(self):
@@ -231,7 +297,7 @@ class BusReservation:
         self.tickets[ticket_id] = ticket
         route["booked"].append(seat_number)
 
-        print("\n✅ Ticket Booked Successfully!")
+        print("\n Ticket Booked Successfully!")
         print(f"Ticket ID: {ticket_id}")
         print(f"Seat Number: {seat_number}")
 
@@ -241,7 +307,7 @@ class BusReservation:
 
         if ticket_id in self.tickets:
             t = self.tickets[ticket_id]
-            print("\n🎫 Ticket Details:")
+            print("\nTicket Details:")
             for key, value in t.items():
                 print(f"{key.capitalize()}: {value}")
         else:
@@ -254,21 +320,21 @@ class BusReservation:
         if ticket_id in self.tickets:
             ticket = self.tickets[ticket_id]
 
-            # Find route and free seat
+
             for r in self.routes.values():
                 if r["route"] == ticket["route"]:
                     r["booked"].remove(ticket["seat"])
                     break
 
             del self.tickets[ticket_id]
-            print("❌ Ticket Cancelled Successfully!")
+            print(" Ticket Cancelled Successfully!")
         else:
             print("Ticket not found!")
 
-    # Main menu
+    # Menu
     def run(self):
         while True:
-            print("\n===== Bus Reservation System =====")
+            print("\nBus Reservation System")
             print("1. Show Routes")
             print("2. Book Ticket")
             print("3. View Ticket")
